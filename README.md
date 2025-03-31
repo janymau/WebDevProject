@@ -12,7 +12,7 @@ This project consists of two main components:
 ## Team Members
 
 - **23B031093** - Zhumabay Alibek  
-- **23B031183** - Abdizhalel Arқajan
+- **23B031183** - Abdizhalel Arkazhan
 - **23B031196** - Aytzhanov Aidar
 
 ## Features
