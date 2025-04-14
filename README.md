@@ -13,7 +13,7 @@ This project consists of two main components:
 
 - **23B031093** - Zhumabay Alibek  
 - **23B031183** - Abdizhalel Arkazhan
-- **23B031196** - Aytzhanov Aidar
+- **23B031196** - Aitzhanov Aidar
 
 ## Features
 
