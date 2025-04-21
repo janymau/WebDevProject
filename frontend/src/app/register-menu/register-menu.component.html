@@ -1,31 +1,27 @@
-<h2>Регистрация</h2>
 <form (ngSubmit)="register()">
-    <label>Username:
-    <input type="text" [(ngModel)]="form.username" name="username" required />
-  </label><br />
+  <div style="text-align: center; margin-bottom: 20px;">
+    <img src="assets/logo.png" alt="Logo" style="width: 80px; height: auto;">
+  </div>
+  
+  <h2>Register</h2>
 
-    <label>Password:
-    <input type="password" [(ngModel)]="form.password" name="password" required />
-  </label><br />
+  <label>First Name</label>
+  <input type="text" [(ngModel)]="form.first_name" name="first_name" required>
 
-    <label>First Name:
-    <input type="text" [(ngModel)]="form.first_name" name="first_name" required />
-  </label><br />
+  <label>Last Name</label>
+  <input type="text" [(ngModel)]="form.last_name" name="last_name" required>
 
-    <label>Last Name:
-    <input type="text" [(ngModel)]="form.last_name" name="last_name" required />
-  </label><br />
+  <label>Username</label>
+  <input type="text" [(ngModel)]="form.username" name="username" required>
 
-    <label>Age:
-    <input type="number" [(ngModel)]="form.age" name="age" required />
-  </label><br />
+  <label>Password</label>
+  <input type="password" [(ngModel)]="form.password" name="password" required>
 
-    <label>Phone Number:
-    <input type="text" [(ngModel)]="form.phoneNumber" name="phoneNumber" required />
-  </label><br />
+  <label>Age:</label>
+  <input type="number" [(ngModel)]="form.age" name="age" required>
 
-    <button type="submit">Зарегистрироваться</button>
+  <label>Phone Number</label>
+  <input type="text" [(ngModel)]="form.phoneNumber" name="phoneNumber" required>
 
-    <div *ngIf="message" style="color: green;">{{ message }}</div>
-    <div *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</div>
+  <button type="submit">Register</button>
 </form>
