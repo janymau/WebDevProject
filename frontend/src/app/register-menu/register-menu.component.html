@@ -1,0 +1,31 @@
+<h2>Регистрация</h2>
+<form (ngSubmit)="register()">
+    <label>Username:
+    <input type="text" [(ngModel)]="form.username" name="username" required />
+  </label><br />
+
+    <label>Password:
+    <input type="password" [(ngModel)]="form.password" name="password" required />
+  </label><br />
+
+    <label>First Name:
+    <input type="text" [(ngModel)]="form.first_name" name="first_name" required />
+  </label><br />
+
+    <label>Last Name:
+    <input type="text" [(ngModel)]="form.last_name" name="last_name" required />
+  </label><br />
+
+    <label>Age:
+    <input type="number" [(ngModel)]="form.age" name="age" required />
+  </label><br />
+
+    <label>Phone Number:
+    <input type="text" [(ngModel)]="form.phoneNumber" name="phoneNumber" required />
+  </label><br />
+
+    <button type="submit">Зарегистрироваться</button>
+
+    <div *ngIf="message" style="color: green;">{{ message }}</div>
+    <div *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</div>
+</form>
