@@ -18,7 +18,6 @@ router.register(r'events', EventView, basename='events')
 router.register(r'register', RegistrationView, basename='register')
 router.register(r'participants', ParticipantView, basename='participant')
 router.register(r'event-participants', EventParticipantView, basename='event-participants')
-router.register(r'event-waiting-list', ListOfWaitingParticipantView, basename='event-waiting-list')
 
 
 urlpatterns = [

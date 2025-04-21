@@ -67,9 +67,15 @@ class ParticipantView(viewsets.ModelViewSet):
     
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        if instance.id != request.user.id:
-            return Response({'error': 'You can only access your own data.'}, status=status.HTTP_403_FORBIDDEN)
-        return super().retrieve(request, *args, **kwargs)
+
+        if instance.id == request.user.id:
+            return super().retrieve(request, *args, **kwargs)
+        if request.method == 'GET':
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+
+        return Response({'error': 'You can only modify your own profile.'}, status=status.HTTP_403_FORBIDDEN)
+
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -93,85 +99,122 @@ class ParticipantView(viewsets.ModelViewSet):
         self.perform_destroy(instance)
         return Response({'message': 'Participant deleted'}, status=status.HTTP_204_NO_CONTENT)
   
+
 class EventView(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
-    @action(detail=True, methods=['get'], url_path='waiting-list')
-    def waiting_list(self, request, pk=None):
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+    def retrieve(self, request, *args, **kwargs):
         event = self.get_object()
-        if event.creator.id != request.user.id:
-            return Response({'error': 'Only the creator can see waiting list.'}, status=status.HTTP_403_FORBIDDEN)
-        
-        waiting = ListOfWaitingParticipant.objects.filter(event=event)
-        serializer = ListOfWaitingParticipantSerializer(waiting, many=True)
-        return Response(serializer.data)
-    
-    @action(detail=True, methods=['delete'], url_path='waiting-list/delete/')
-    def delete_from_waiting_list(self, request, *args, **kwargs):
-        event_id = self.kwargs.get('event_id')
-        try:
-            event = Event.objects.get(id=event_id)
-        except Event.DoesNotExist:
-            return Response({'error': 'Event not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(event)
+        response_data = serializer.data
 
-        if event.creator.id != request.user.id:
-            return Response({'error': 'Only the creator can remove from the waiting list'}, status=status.HTTP_403_FORBIDDEN)
+        # Участники
+        event_participant = EventParticipant.objects.filter(event=event).first()
+        participants = event_participant.eventParticipants.all() if event_participant else []
+        response_data['participants'] = ParticipantSerializer(participants, many=True).data
 
-        return super().destroy(request, *args, **kwargs)
+        # Список ожидающих — только для создателя
+        if request.user.id == event.creator.id:
+            waiting_list = ListOfWaitingParticipant.objects.filter(event=event)
+            response_data['waiting_list'] = ListOfWaitingParticipantSerializer(waiting_list, many=True).data
 
-    def create(self, request, *args, **kwargs):
-        data = request.data.copy()  
-        required_fields = ['type', 'place', 'date', 'description', 'capacity']
-        
-        for field in required_fields:
-            if field not in data:
-                return Response({'error': f"Missing field: {field}"}, status=status.HTTP_400_BAD_REQUEST)
+        # Флаг: может ли текущий пользователь подать заявку
+        participant = Participant.objects.filter(user=request.user).first()  # Преобразуем User в Participant
+        already_joined = event_participant and event_participant.eventParticipants.filter(id=participant.id).exists()
+        already_waiting = ListOfWaitingParticipant.objects.filter(event=event, participant=participant).exists()
+        is_creator = request.user.id == event.creator.id
+        response_data['can_apply'] = not already_joined and not already_waiting and not is_creator
 
-        participant_id = data.get('creator')  
+        return Response(response_data)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated], url_path='join')
+    def join_event(self, request, pk=None):
+        event = self.get_object()
+        user = request.user
+
+        if user == event.creator:
+            return Response({'error': 'Creator cannot join their own event.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        event_participant, _ = EventParticipant.objects.get_or_create(event=event)
+
+        if event_participant.eventParticipants.filter(id=user.id).exists():
+            return Response({'error': 'Already a participant.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if ListOfWaitingParticipant.objects.filter(event=event, participant=user).exists():
+            return Response({'error': 'Already in waiting list.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        ListOfWaitingParticipant.objects.create(event=event, participant=user)
+        return Response({'message': 'Added to waiting list.'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated], url_path='leave')
+    def leave_event(self, request, pk=None):
+        event = self.get_object()
+        user = request.user
+
+        event_participant = EventParticipant.objects.filter(event=event).first()
+        if event_participant:
+            event_participant.eventParticipants.remove(user)
+
+        ListOfWaitingParticipant.objects.filter(event=event, participant=user).delete()
+
+        return Response({'message': 'You have left the event.'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated], url_path='approve')
+    def approve_participant(self, request, pk=None):
+        event = self.get_object()
+
+        if request.user.id != event.creator.id:
+            return Response({'error': 'Only the creator can approve participants.'}, status=status.HTTP_403_FORBIDDEN)
+
+        participant_id = request.data.get('participant_id')
         if not participant_id:
-            return Response({'error': 'Missing creator'}, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response({'error': 'participant_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            creator = Participant.objects.get(id=participant_id)
+            participant = Participant.objects.get(id=participant_id)
         except Participant.DoesNotExist:
             return Response({'error': 'Participant not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        
-        event = serializer.instance
-        
-        event_participant = EventParticipant.objects.create(event=event)
-        event_participant.eventParticipants.add(creator)
+        event_participant, _ = EventParticipant.objects.get_or_create(event=event)
+        if event_participant.eventParticipants.count() >= event.capacity:
+            return Response({'error': 'Event is full'}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        ListOfWaitingParticipant.objects.filter(event=event, participant=participant).delete()
 
-    
-    def list(self, request, *args, **kwargs):
-        print('All events')
-        return super().list(request, *args, **kwargs)
-    
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+        if event_participant.eventParticipants.filter(id=participant.id).exists():
+            return Response({'error': 'Already a participant'}, status=status.HTTP_400_BAD_REQUEST)
 
-    def partial_update(self, request, *args, **kwargs):
+        event_participant.eventParticipants.add(participant)
+
+        return Response({'message': 'Participant approved and added to event'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated], url_path='reject')
+    def reject_participant(self, request, pk=None):
         event = self.get_object()
-        if 'isActive' in request.data:
-            if event.creator.id != request.user.id:
-                return Response({'error': 'Only the creator can deactivate the event.'}, status=status.HTTP_403_FORBIDDEN)
-            event.isActive = request.data['isActive']
-            event.save()
-            return Response({'message': f"Event status updated to {'active' if event.isActive else 'inactive'}."}, status=status.HTTP_200_OK)
-        return super().partial_update(request, *args, **kwargs)
 
-    def destroy(self, request, *args, **kwargs):
-        event = self.get_object()
-        if event.creator.id != request.user.id:
-                return Response({'error': 'Only the creator can destroy the event.'}, status=status.HTTP_403_FORBIDDEN)    
-        return super().destroy(request, *args, **kwargs)
+        if request.user.id != event.creator.id:
+            return Response({'error': 'Only the creator can reject participants.'}, status=status.HTTP_403_FORBIDDEN)
+
+        participant_id = request.data.get('participant_id')
+        if not participant_id:
+            return Response({'error': 'participant_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            participant = Participant.objects.get(id=participant_id)
+        except Participant.DoesNotExist:
+            return Response({'error': 'Participant not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        deleted, _ = ListOfWaitingParticipant.objects.filter(event=event, participant=participant).delete()
+        if deleted:
+            return Response({'message': 'Participant rejected and removed from waiting list'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Participant was not in the waiting list'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class EventParticipantView(viewsets.ModelViewSet):    
     queryset = EventParticipant.objects.all()   
