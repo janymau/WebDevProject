@@ -1,0 +1,21 @@
+<div class="questions-container container">
+  <div *ngIf="logged" class="ask-button-wrapper">
+    <a routerLink="/newquestion" class="btn btn-primary ask-btn">Ask Question</a>
+  </div>
+  <div *ngIf="!logged" class="ask-button-wrapper">
+    <button class="btn btn-outline-primary ask-btn" (click)="alert()">Ask Question</button>
+    <h6 *ngIf="alertF" class="alert-msg">To ask questions, you must be logged in</h6>
+  </div>
+
+  <div class="question-list">
+    <div *ngFor="let question of questions" class="question-card">
+      <a [routerLink]="['/questions', question.id]" class="question-link">
+        <div class="question-content">
+          <h5>{{ question.title }}</h5>
+          <small class="date">{{ question.created | date: 'HH:mm, dd/MM/yyyy' }}</small>
+        </div>
+      </a>
+      <a [routerLink]="['/questions', question.id, 'edit']" class="edit-link">✏️</a>
+    </div>
+  </div>
+</div>
