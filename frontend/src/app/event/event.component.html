@@ -1,14 +1,17 @@
 <div class="event-list">
-    <h2>Все события</h2>
-
-    <div *ngFor="let event of events" class="event-card">
-        <h3>{{ event.id }}</h3>
-        <h3>{{ event.type }}</h3>
-        <h3>{{ event.name }}</h3>
-        <p>{{ event.description }}</p>
-        <p><strong>Дата:</strong> {{ event.date}}</p>
-        <p><strong>Местоположение:</strong> {{ event.place}}</p>
-        <p><strong>Создатель:</strong> {{ event.creator}}</p>
-        <!-- <button (click)="viewEventDetails(event.id)">Подробнее</button> -->
+    <div class="event-card" *ngFor="let event of events">
+      <h3>{{ event.type }}</h3>
+      <p>📍 {{ event.place }}</p>
+      <p>🗓️ {{ event.date | date:'medium' }}</p>
+      <p>{{ event.description }}</p>
+      <p>👤 Вмещает до: {{ event.capacity }} чел.</p>
+  
+      <div class="buttons">
+        <button (click)="goToDetails(event.id)">Подробнее</button>
+        <button *ngIf="event.can_apply" (click)="applyToEvent(event.id)">
+          Участвовать
+        </button>
+      </div>
     </div>
-</div>
+  </div>
+  

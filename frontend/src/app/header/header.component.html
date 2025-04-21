@@ -1,25 +1,28 @@
-<div class="main">
-    <div class="logo-section">
-        <img src="logo.png" alt="Logo" class="logo" />
+<header class="main-header">
+    <div class="logo-section" (click)="goHome()" style="cursor: pointer;">
+      <img src="assets/logo.png" alt="Logo" class="logo" />
     </div>
-
+  
     <div class="header-links">
-        <input type="text" placeholder="Search events..." />
-        <a>Events</a>
-        <a *ngIf="isLoggedIn">My Events</a>
-        <a *ngIf="isLoggedIn">My Profile</a>
-
-        <ng-container *ngIf="isLoggedIn">
-            <img [src]="userAvatarUrl" class="avatar" />
-            <span>{{ username }}</span>
-        </ng-container>
+      <input type="text" placeholder="Search events..." />
+  
+      <a routerLink="/events">Events</a>
+      <a *ngIf="isLoggedIn" routerLink="/my-events">My Events</a>
+      <a *ngIf="isLoggedIn" routerLink="/profile">My Profile</a>
+  
+      <ng-container *ngIf="isLoggedIn">
+        <img [src]="userAvatarUrl" class="avatar" />
+        <span>{{ username }}</span>
+      </ng-container>
     </div>
-
+  
     <div class="login-logout">
-        <button *ngIf="isLoggedIn" class="login-staff">Log out</button>
-        <ng-container *ngIf="!isLoggedIn">
-            <button class="login-staff">Log in</button>
-            <button class="login-staff">Sign up</button>
-        </ng-container>
+      <button *ngIf="isLoggedIn" class="login-staff" (click)="logout()">Log out</button>
+  
+      <ng-container *ngIf="!isLoggedIn">
+        <button class="login-staff" (click)="goLogin()">Log in</button>
+        <button class="login-staff" (click)="goSignup()">Sign up</button>
+      </ng-container>
     </div>
-</div>
+  </header>
+  

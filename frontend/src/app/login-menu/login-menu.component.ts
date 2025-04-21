@@ -20,8 +20,8 @@ export class LoginMenuComponent {
   login(){
     this.authService.login(this.username, this.password).subscribe({
       next: (response)=>{
-        localStorage.setItem('access token', response.access);
-        localStorage.setItem('refresh token', response.refresh);
+        localStorage.setItem('access', response.access);
+        localStorage.setItem('refresh', response.refresh);
         console.log('logged in');
         this.errorMessage = '';
         this.router.navigate(['main']);

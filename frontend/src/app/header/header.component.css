@@ -1,69 +1,61 @@
-.main {
+.main-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, #3b22b6, #5d4edb);
-    padding: 12px 24px;
-    color: white;
-    font-family: 'Segoe UI', sans-serif;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-    height: 40px;
-    cursor: pointer;
-}
-
-.header-links {
+    padding: 15px 30px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .logo-section img {
+    width: 140px;
+    height: auto;
+  }
+  
+  .header-links {
     display: flex;
     align-items: center;
     gap: 20px;
-}
-
-.header-links a {
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-    font-weight: 500;
-    transition: color 0.2s ease;
-}
-
-.header-links a:hover {
-    color: #e0dfff;
-}
-
-.header-links input {
-    padding: 6px 10px;
-    border: none;
-    border-radius: 6px;
+  }
+  
+  .header-links input {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     outline: none;
     font-size: 14px;
-}
-
-.avatar {
-    height: 34px;
-    width: 34px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid white;
-}
-
-.login-logout {
-    display: flex;
-    gap: 10px;
-}
-
-.login-staff {
-    background-color: white;
-    color: #2e0eb0;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-weight: bold;
+  }
+  
+  .header-links a {
+    text-decoration: none;
+    font-weight: 500;
+    color: #333;
+    transition: color 0.3s ease;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.login-staff:hover {
-    background-color: #f0f0f0;
-}
+  }
+  
+  .header-links a:hover {
+    color: #c8105c;
+  }
+  
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-left: 8px;
+  }
+  
+  .login-logout button {
+    margin-left: 12px;
+    padding: 8px 14px;
+    background-color: #c8105c;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  .login-logout button:hover {
+    background-color: #a40b4a;
+  }
+  
