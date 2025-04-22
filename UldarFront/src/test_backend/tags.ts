@@ -7,19 +7,19 @@ export interface Tags {
 export let tags_list = [
   {
     id: 1,
-    name: 'python',
+    name: 'Basketball',
     description:
-      'Python is a multi-paradigm, dynamically typed, multi-purpose programming language. It is designed to be quick to learn, understand, and use, and enforces a clean and uniform syntax. Please note that Python 2 is officially out of support as of 2020-01-01. For version-specific Python questions, add the [python-2.7] or [python-3.x] tag. When using a Python variant (e.g. Jython, PyPy) or library (e.g. Pandas, NumPy), please include it in the tags.',
+      'Basketball is a team sport in which two teams, most commonly of five players each, opposing one another on a rectangular court, compete to shoot the ball through the opponent\'s hoop while preventing the opponent from shooting through their own hoop.',
   },
   {
     id: 2,
-    name: 'web',
+    name: 'Football',
     description:
-      'Do not use this tag. For questions related to an aspect of the world wide web, use a more specific tag for it, such as [uri], [html], [http] or [w3c].',
+      'Football is a family of team sports that involve, to varying degrees, kicking a ball to score a goal.',
   },
   {
     id: 3,
-    name: 'basics',
-    description: 'General tag for basic coding',
+    name: 'Tennis',
+    description: 'Tennis is a racket sport that can be played individually against a single opponent (singles) or between two teams of two players each (doubles). Each player uses a racket that is strung with cord to strike an air-filled hollow rubber ball covered with felt over a net into the opponent\'s court.',
   },
 ];
