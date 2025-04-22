@@ -12,7 +12,7 @@
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:\KBTU_Spring_2022\Web\Project\CodeHelp_Project\codehelp_backend\db.sqlite3</jdbc-url>
+      <jdbc-url>jdbc:sqlite:D:\KBTU_Spring_2025\Web\Project\CodeHelp_Project\codehelp_backend\db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

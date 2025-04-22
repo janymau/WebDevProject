@@ -7,7 +7,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
-  title = 'CodeHelp';
+  title = 'Uldar';
   logged=false;
 
   constructor(private router: Router){
