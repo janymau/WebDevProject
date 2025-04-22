@@ -1,8 +1,10 @@
+
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Users } from '../../../test_backend/users';
 import { ServiceService } from "../../services/service.service";
 import Validation from '../../utils/validation'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -32,7 +34,7 @@ export class SignUpComponent implements OnInit {
     age: string;
   } | undefined
 
-  constructor(private formBuilder: FormBuilder, private service: ServiceService) { }
+  constructor(private formBuilder: FormBuilder, private service: ServiceService, private route : Router) { }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group(
@@ -91,5 +93,8 @@ export class SignUpComponent implements OnInit {
     this.submitted = false;
     this.form.reset();
   }
-
+  
+  goToLogin() {
+    this.route.navigateByUrl('login');
+  }
 }

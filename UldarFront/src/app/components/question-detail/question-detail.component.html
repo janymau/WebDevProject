@@ -22,8 +22,8 @@
   <div *ngIf="usernameFromToken" class="answer-form">
     <h4 class="mb-3">💬 Your Answer</h4>
     <form (ngSubmit)="addMessage()">
-      <textarea [(ngModel)]="body" [ngModelOptions]="{ standalone: true }" placeholder="Type your answer..." rows="4"></textarea>
-      <textarea [(ngModel)]="code" [ngModelOptions]="{ standalone: true }" placeholder="Type your Car model" rows="4"></textarea>
+      <textarea [(ngModel)]="body" [ngModelOptions]="{ standalone: true }" placeholder="Type your Position" rows="4"></textarea>
+      <textarea [(ngModel)]="code" [ngModelOptions]="{ standalone: true }" placeholder="Type your Number" rows="4"></textarea>
       <button type="submit" class="btn btn-primary">Answer</button>
     </form>
   </div>

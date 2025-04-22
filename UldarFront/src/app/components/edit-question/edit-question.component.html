@@ -16,8 +16,8 @@
         <p *ngIf="body_empty">Explain the question!</p>
       </div>
       <div class="block">
-        <h4>Code</h4>
-        <h6>Include source code if exists</h6>
+        <h4>Location</h4>
+        <h6>Location and Number</h6>
         <textarea cols="30" rows="10" id="codefield" [(ngModel)]="codefield" [ngModelOptions]="{ standalone: true }"
                   placeholder="print(sum(array))?" value="{{codefield}}"></textarea>
       </div>
@@ -36,12 +36,12 @@
          Submit
       </button>
       <div *ngIf="isCompleted">
-        <h5>Are you sure there is no such questions on our site?</h5>
+        <h5>Are you sure there is no such Announcement on our site?</h5>
         <button type="submit" (click)="editquestion()" class="btn btn-lg btn-primary subm_part">
           Yes
         </button>
         <button type="submit" (click)="recheck()" class="subm_part btn btn-lg btn-primary">
-          No, need to change my question
+          No, need to change my Announcement
         </button>
       </div>
     </div>
