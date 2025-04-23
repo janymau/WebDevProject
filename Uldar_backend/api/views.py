@@ -89,10 +89,10 @@ def question_messages(request, pk):
         return Response(serializer.data)
 
 
-# class TagListView(generics.ListCreateAPIView):
-#     queryset = Tag.objects.all()
-#     permission_classes = [AllowAny]
-#     serializer_class = TagSerializer
+class TagListView(generics.ListCreateAPIView):
+    queryset = Tag.objects.all()
+    permission_classes = [AllowAny]
+    serializer_class = TagSerializer
 
 
 @api_view(['GET', 'POST'])
